@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-api-stg
+  namespace: stg-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-api-stg
+  template:
+    metadata:
+      labels:
+        app: nodejs-api-stg
+    spec:
+# if using private registry
+#      imagePullSecrets:
+#        - name: hello
+      containers:
+      - name:  nodejs-api-stg
+        image: farrasyakila/nodejs:update-v10
+        env : 
+        - name: MYSQL_HOST
+          value: "mysql-api-stg.stg-api.svc.cluster.local"
+        - name: MYSQL_USER
+          value: "root"
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-nodejs
+              key: password
+        - name: MYSQL_DATABASE
+          value: "nodejs_api"
+        resources:
+          limits:
+            cpu: "0.4"
+            memory: 500Mi
+          requests:
+            cpu: "0.1"
+            memory: 150Mi
+        ports:
+        - containerPort: 3000

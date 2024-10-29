@@ -1,0 +1,35 @@
+version: '3.8'  # Gunakan versi yang lebih baru jika memungkinkan
+
+services:
+  nodejs:
+    image: nodejs:update-v10
+    container_name: nodejs-container
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 12345
+      MYSQL_DATABASE: nodejs_api
+    # Uncomment the lines below if you need to build from Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: nodejs_api
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s

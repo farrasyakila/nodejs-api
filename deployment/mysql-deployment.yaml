@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-api-stg
+  namespace: stg-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-api-stg
+  template:
+    metadata:
+      labels:
+        app: mysql-api-stg
+    spec:
+      containers:
+      - name:  mysql-api-stg
+        image: mysql:8.0
+        env : 
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-nodejs
+              key: password
+        - name: MYSQL_DATABASE
+          value: "nodejs_api"
+        resources:
+          limits:
+            cpu: "0.4" 
+            memory: 500Mi 
+          requests:
+            cpu: "0.1" 
+            memory: 150Mi 
+        ports:
+        - containerPort: 3306
+        volumeMounts: 
+        - name: mysql-api-stg
+          mountPath: /data
+      volumes:
+      - name: mysql-api-stg
+        persistentVolumeClaim:
+          claimName: mysql-api-stg

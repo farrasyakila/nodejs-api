@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress 
+metadata:
+  name: nodejs-api-stg
+  namespace: stg-api
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: stg-api.farrasyakila.xyz
+    http:
+      paths:
+      - backend:
+          service:
+            name: nodejs-api-stg
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
