@@ -1,8 +1,8 @@
-version: '3.8'  # Gunakan versi yang lebih baru jika memungkinkan
+version: '3.8'
 
 services:
   nodejs:
-    image: nodejs:update-v10
+    image: farrasyakila/api-nodejs:latest
     container_name: nodejs-container
     ports:
       - "3000:3000"
@@ -14,6 +14,7 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: 12345
       MYSQL_DATABASE: nodejs_api
+    restart: always
     # Uncomment the lines below if you need to build from Dockerfile
     # build:
     #   context: .
@@ -33,3 +34,5 @@ services:
       retries: 5
       start_period: 30s
       timeout: 10s
+    volumes:
+    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
